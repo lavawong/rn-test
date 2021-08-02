@@ -17,9 +17,10 @@ const getData = () => {
 };
 
 const Hello = () => {
-  const items = getData();
+  const [items] = useState(getData());
   return (
-    <View>
+    <View style={{flex: 1}}>
+      <Text>Hello</Text>
       {items.map((item, index) => (
         <Text style={styles.item} key={index}>
           {item}
@@ -32,33 +33,47 @@ const Hello = () => {
 const App = () => {
   const [searchText, setSearchText] = useState('');
   const [catList] = useState(
-    getData().map(txt => {
+    getData().map((text, index) => {
       return {
-        key: txt,
+        index,
+        text,
       };
     }),
   );
+
   return (
     <View style={styles.container}>
-      <TextInput
-        onChangeText={text => setSearchText(text)}
-        placeholder="Type herer to translate!"
-        defaultValue={searchText}
-      />
-      <Image
-        source={{uri: 'https://reactnative.dev/docs/assets/p_cat1.png'}}
-        style={styles.imageNormalSize}
-      />
-      <Text>{searchText || '你还未输入任何信息'}</Text>
-      <ScrollView style={styles.section}>
+      <View style={styles.section}>
+        <TextInput
+          onChangeText={text => setSearchText(text)}
+          placeholder="Type herer to translate!"
+          defaultValue={searchText}
+        />
+        <Image
+          source={{uri: 'https://reactnative.dev/docs/assets/p_cat1.png'}}
+          style={styles.imageNormalSize}
+        />
+      </View>
+      <View style={styles.section}>
+        <Text>{searchText || '你还未输入任何信息'}</Text>
+      </View>
+      <ScrollView style={styles.section} contentContainerStyle={{flexGrow: 1}}>
+        <View style={{flex: 1}}>
+          <Text>ScrollView</Text>
+        </View>
         <Hello />
       </ScrollView>
       <View style={styles.section}>
+        <Text>FlatList</Text>
         <FlatList
           data={catList}
-          renderItem={(item, index) => (
-            <Text style={styles.item}>{typeof item}adfadsf</Text>
-          )}
+          renderItem={({item}) => {
+            return (
+              <View>
+                <Text style={styles.item}>{item.text}</Text>
+              </View>
+            );
+          }}
         />
       </View>
     </View>
@@ -69,6 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     // alignItems: 'center',
+    overflow: 'hidden',
   },
   imageNormalSize: {
     width: 200,
@@ -77,6 +93,7 @@ const styles = StyleSheet.create({
   section: {
     flex: 1,
     paddingTop: 22,
+    borderWidth: 1,
   },
   item: {
     padding: 10,
